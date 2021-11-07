@@ -8,6 +8,8 @@
 from setuptools import setup
 import subprocess
 
+print(2 * "\n", flush=True)
 subprocess.run("hg version -v --config extensions.hggit=".split())
+print(2 * "\n", flush=True)
 
 setup()
