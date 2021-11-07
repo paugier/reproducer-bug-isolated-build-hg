@@ -1,0 +1,42 @@
+name: CI
+
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 5
+      matrix:
+        python-version: [3.9]
+
+    steps:
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Mercurial and hg-git in a virtualenv
+      run: |
+        python -m venv venv_mercurial
+        . venv_mercurial/bin/activate
+        pip install mercurial dulwich
+        hg clone https://foss.heptapod.net/mercurial/hg-git/
+        cd hg-git
+        pip install -e .
+        cd ..
+        deactivate
+        mkdir $HOME/.local/bin
+        ln -s venv_mercurial/bin/hg $HOME/.local/bin/hg
+        export PATH=$HOME/.local/bin:$PATH
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: build
+      run: |
+        hg version -v --config extensions.hggit=
+        pip install . -v
