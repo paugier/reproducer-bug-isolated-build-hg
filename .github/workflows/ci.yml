@@ -19,16 +19,18 @@ jobs:
 
     - name: Install Mercurial and hg-git in a virtualenv
       run: |
+        cd $HOME
         python -m venv venv_mercurial
         . venv_mercurial/bin/activate
-        pip install mercurial dulwich
+        pip install --upgrade pip
+        pip install mercurial==5.8.1 dulwich
         hg clone https://foss.heptapod.net/mercurial/hg-git/
         cd hg-git
         pip install -e .
         cd ..
         deactivate
-        mkdir $HOME/.local/bin
-        ln -s venv_mercurial/bin/hg $HOME/.local/bin/hg
+        mkdir -p $HOME/.local/bin
+        ln -s $HOME/venv_mercurial/bin/hg $HOME/.local/bin/hg
         export PATH=$HOME/.local/bin:$PATH
 
     - name: Checkout
@@ -38,5 +40,7 @@ jobs:
 
     - name: build
       run: |
+        export PATH=$HOME/.local/bin:$PATH
+        which hg
         hg version -v --config extensions.hggit=
         pip install . -v
