@@ -38,7 +38,7 @@ jobs:
         cd hg-git
         pip install -e .
         mkdir -p $HOME/.local/bin
-        ln -s $HOME/miniconda3/_env_mercurial/bin/hg $HOME/.local/bin/hg
+        ln -s /usr/share/miniconda3/_env_mercurial/bin/hg $HOME/.local/bin/hg
         export PATH=$HOME/.local/bin:$PATH
         hg version -v --config extensions.hggit=
 
@@ -49,7 +49,9 @@ jobs:
 
     - name: build
       run: |
+        ls /usr/share/miniconda3/_env_mercurial/bin/hg
         export PATH=$HOME/.local/bin:$PATH
+        which hg
         echo "Outside the isolated build, hg-git is installed:"
         hg version -v --config extensions.hggit=
         echo "In the isolated build, Mercurial can't import hg-git:"
