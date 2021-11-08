@@ -38,8 +38,11 @@ jobs:
         hg clone https://foss.heptapod.net/mercurial/hg-git/
         cd hg-git
         pip install -e .
+        cd $HOME
+        hg version -v --config extensions.hggit=
+        conda deactivate
         mkdir -p $HOME/.local/bin
-        ln -s /usr/share/miniconda3/test/bin/hg $HOME/.local/bin/hg
+        ln -s /usr/share/miniconda/test/bin/hg $HOME/.local/bin/hg
         export PATH=$HOME/.local/bin:$PATH
         hg version -v --config extensions.hggit=
 
@@ -50,7 +53,7 @@ jobs:
 
     - name: build
       run: |
-        ls /usr/share/miniconda3/test/bin/hg
+        ls /usr/share/miniconda/test/bin/hg
         export PATH=$HOME/.local/bin:$PATH
         which hg
         echo "Outside the isolated build, hg-git is installed:"
