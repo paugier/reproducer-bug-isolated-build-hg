@@ -20,6 +20,9 @@ jobs:
     - name: Install hg-git with --user
       run: |
         hg debuginstall
+        cd $HOME
+        wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
+        $(hg debuginstall -T "{pythonexe}") get-pip.py
         $(hg debuginstall -T "{pythonexe}") -m pip install dulwich hg-git --user
 
     - name: Checkout
