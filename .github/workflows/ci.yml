@@ -15,6 +15,7 @@ jobs:
     - name: Install apt packages
       run: |
         sudo apt-get update
+        # for Python 2.7 (used by Mercurial in Ubuntu 20.04)
         sudo apt-get install python-dev
 
     - name: Set up Python ${{ matrix.python-version }}
@@ -25,10 +26,9 @@ jobs:
     - name: Install hg-git with --user
       run: |
         hg debuginstall
-        cd $HOME
         wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
         $(hg debuginstall -T "{pythonexe}") get-pip.py
-        $(hg debuginstall -T "{pythonexe}") -m pip install dulwich hg-git --user
+        $(hg debuginstall -T "{pythonexe}") -m pip install "dulwich<0.20.0,>=0.19.0" hg-git --user
 
     - name: Checkout
       uses: actions/checkout@v2
@@ -37,5 +37,7 @@ jobs:
 
     - name: build
       run: |
+        echo "Outside the isolated build, hg-git is installed:"
         hg version -v --config extensions.hggit=
+        echo "In the isolated build, Mercurial can't import hg-git:"
         pip install . -v
