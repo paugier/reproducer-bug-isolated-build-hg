@@ -12,23 +12,17 @@ jobs:
 
     steps:
 
-    - name: Install apt packages
-      run: |
-        sudo apt-get update
-        # for Python 2.7 (used by Mercurial in Ubuntu 20.04)
-        sudo apt-get install python-dev
-
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install hg-git with --user
-      run: |
-        hg debuginstall
-        wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
-        $(hg debuginstall -T "{pythonexe}") get-pip.py
-        $(hg debuginstall -T "{pythonexe}") -m pip install "dulwich<0.20.0,>=0.19.0" hg-git --user
+    - name: Install miniforge
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        auto-update-conda: true
+        mamba-version: "*"
+        channels: conda-forge
 
     - name: Checkout
       uses: actions/checkout@v2
