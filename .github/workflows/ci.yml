@@ -42,8 +42,9 @@ jobs:
         hg version -v --config extensions.hggit=
         conda deactivate
         mkdir -p $HOME/.local/bin
-        ln -s /usr/share/miniconda/test/bin/hg $HOME/.local/bin/hg
+        ln -s /usr/share/miniconda/envs/test/bin/hg $HOME/.local/bin/hg
         export PATH=$HOME/.local/bin:$PATH
+        which hg
         hg version -v --config extensions.hggit=
 
     - name: Checkout
@@ -53,7 +54,7 @@ jobs:
 
     - name: build
       run: |
-        ls /usr/share/miniconda/test/bin/hg
+        ls /usr/share/miniconda/envs/test/bin/hg
         export PATH=$HOME/.local/bin:$PATH
         which hg
         echo "Outside the isolated build, hg-git is installed:"
