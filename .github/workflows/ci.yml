@@ -24,6 +24,20 @@ jobs:
         mamba-version: "*"
         channels: conda-forge
 
+    - name: Install Mercurial in a conda env
+      run: |
+        conda create -n _env_mercurial mercurial -y
+        conda activate _env_mercurial
+        which python
+        cd $HOME
+        hg clone https://foss.heptapod.net/mercurial/hg-git/
+        cd hg-git
+        pip install -e .
+        mkdir -p $HOME/.local/bin
+        ln -s $HOME/miniconda3/_env_mercurial/bin/hg $HOME/.local/bin/hg
+        export PATH=$HOME/.local/bin:$PATH
+        hg version -v --config extensions.hggit=
+
     - name: Checkout
       uses: actions/checkout@v2
       with:
@@ -31,6 +45,7 @@ jobs:
 
     - name: build
       run: |
+        export PATH=$HOME/.local/bin:$PATH
         echo "Outside the isolated build, hg-git is installed:"
         hg version -v --config extensions.hggit=
         echo "In the isolated build, Mercurial can't import hg-git:"
