@@ -19,12 +19,8 @@ jobs:
 
     - name: Install hg-git with --user
       run: |
-        cd $HOME
-        pip install --upgrade pip
-        pip install dulwich --user
-        hg clone https://foss.heptapod.net/mercurial/hg-git/
-        cd hg-git
-        pip install -e . --user
+        hg debuginstall
+        $(hg debuginstall -T "{pythonexe}") -m pip install dulwich hg-git --user
 
     - name: Checkout
       uses: actions/checkout@v2
