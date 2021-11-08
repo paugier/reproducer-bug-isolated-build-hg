@@ -12,26 +12,23 @@ jobs:
 
     steps:
 
+    - name: Install apt packages
+      run: |
+        sudo apt-get update
+        # for Python 2.7 (used by Mercurial in Ubuntu 20.04)
+        sudo apt-get install python-dev
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install Mercurial and hg-git in a virtualenv
+    - name: Install hg-git with --user
       run: |
-        cd $HOME
-        python -m venv venv_mercurial
-        . venv_mercurial/bin/activate
-        pip install --upgrade pip
-        pip install mercurial==5.8.1 dulwich
-        hg clone https://foss.heptapod.net/mercurial/hg-git/
-        cd hg-git
-        pip install -e .
-        cd ..
-        deactivate
-        mkdir -p $HOME/.local/bin
-        ln -s $HOME/venv_mercurial/bin/hg $HOME/.local/bin/hg
-        export PATH=$HOME/.local/bin:$PATH
+        hg debuginstall
+        wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
+        $(hg debuginstall -T "{pythonexe}") get-pip.py
+        $(hg debuginstall -T "{pythonexe}") -m pip install "dulwich<0.20.0,>=0.19.0" hg-git --user
 
     - name: Checkout
       uses: actions/checkout@v2
@@ -40,7 +37,7 @@ jobs:
 
     - name: build
       run: |
-        export PATH=$HOME/.local/bin:$PATH
-        which hg
+        echo "Outside the isolated build, hg-git is installed:"
         hg version -v --config extensions.hggit=
+        echo "In the isolated build, Mercurial can't import hg-git:"
         pip install . -v
