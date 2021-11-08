@@ -30,15 +30,16 @@ jobs:
 
     - name: Install Mercurial in a conda env
       run: |
-        conda create -n _env_mercurial mercurial -y
-        conda activate _env_mercurial
+        conda activate test
+        mamba install mercurial -y
         which python
+        which hg
         cd $HOME
         hg clone https://foss.heptapod.net/mercurial/hg-git/
         cd hg-git
         pip install -e .
         mkdir -p $HOME/.local/bin
-        ln -s /usr/share/miniconda3/_env_mercurial/bin/hg $HOME/.local/bin/hg
+        ln -s /usr/share/miniconda3/test/bin/hg $HOME/.local/bin/hg
         export PATH=$HOME/.local/bin:$PATH
         hg version -v --config extensions.hggit=
 
@@ -49,7 +50,7 @@ jobs:
 
     - name: build
       run: |
-        ls /usr/share/miniconda3/_env_mercurial/bin/hg
+        ls /usr/share/miniconda3/test/bin/hg
         export PATH=$HOME/.local/bin:$PATH
         which hg
         echo "Outside the isolated build, hg-git is installed:"
