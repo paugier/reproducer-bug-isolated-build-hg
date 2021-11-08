@@ -54,6 +54,9 @@ jobs:
 
     - name: build
       run: |
+        conda deactivate
+        which python
+        which pip
         ls /usr/share/miniconda/envs/test/bin/hg
         export PATH=$HOME/.local/bin:$PATH
         which hg
